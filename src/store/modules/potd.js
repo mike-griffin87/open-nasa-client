@@ -7,8 +7,10 @@ const getters = {
 };
 
 const actions = {
-  async fetchPotd({ commit }) {
-    const response = await this._vm.$http.get("/api/potd");
+  async fetchPotd({ commit }, date = null) {
+    const response = await this._vm.$http.get(
+      date ? `/planetary/apod?date=${date}` : "/planetary/apod"
+    );
     commit("setPotd", response.data);
   },
 };
