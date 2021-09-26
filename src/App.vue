@@ -11,7 +11,8 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn href="#" text> POTD </v-btn>
+      <v-btn href="/" text> HOME </v-btn>
+      <v-btn href="/archive" text> ARCHIVE </v-btn>
     </v-app-bar>
 
     <v-main>

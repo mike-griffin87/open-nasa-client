@@ -1,7 +1,9 @@
 <template>
   <v-container>
     <v-row>
-      <v-col class="d-flex"> <h1>Astronomy Photo of the Day</h1></v-col>
+      <v-col class="d-flex align-center">
+        <h1>Astronomy Photo of the Day</h1></v-col
+      >
       <v-col cols="3">
         <v-menu
           ref="menu"
@@ -9,6 +11,8 @@
           transition="scale-transition"
           offset-y
           min-width="auto"
+          :close-on-content-click="false"
+          :return-value.sync="date"
         >
           <template v-slot:activator="{ on }">
             <v-text-field
@@ -18,8 +22,12 @@
               v-on="on"
             ></v-text-field>
           </template>
-          <v-date-picker v-model="selectedDate" no-title scrollable>
-          </v-date-picker>
+          <v-date-picker
+            v-model="selectedDate"
+            no-title
+            scrollable
+            :max="todaysDate"
+          ></v-date-picker>
         </v-menu>
       </v-col>
       <v-col cols="12" v-if="potd">
@@ -30,6 +38,7 @@
             height="400px"
             :src="potd.url"
             :lazy-src="potd.hdurl"
+            @click="openInNewTab(potd.hdurl)"
           >
             <v-card-title>{{ potd.title }}</v-card-title>
           </v-img>
@@ -40,22 +49,25 @@
           <v-card-subtitle class="pb-0"> {{ potd.copyright }} </v-card-subtitle>
 
           <v-card-text class="text--primary">
-            <h2 v-if="potd.media_type === 'video'" class="mb-3">
+            <h2 v-if="potd.media_type === 'video'" class="my-3">
               {{ potd.title }}
             </h2>
-            <div
-              v-if="potd.media_type === 'video' && potd.copyright"
-              class="grey--text mb-4"
-            >
-              {{ potd.copyright }}
-            </div>
             <div>{{ potd.explanation }}</div>
           </v-card-text>
 
           <v-card-actions>
-            <v-btn color="orange" text> Share </v-btn>
+            <v-btn color="orange" text @click="changePotd('previous')">
+              Previous
+            </v-btn>
 
-            <v-btn color="orange" text> Explore </v-btn>
+            <v-btn
+              color="orange"
+              text
+              @click="changePotd('next')"
+              :disabled="todayIsSelected"
+            >
+              Next
+            </v-btn>
           </v-card-actions>
         </v-card>
         <v-skeleton-loader
@@ -78,13 +90,34 @@ export default {
       fetching: true,
       menu: false,
       selectedDate: this.$route.query.date || dayjs().format("YYYY-MM-DD"),
+      todaysDate: dayjs().format("YYYY-MM-DD"),
     };
   },
   methods: {
     ...mapActions("potd", ["fetchPotd"]),
+    async changePotd(direction) {
+      const date = dayjs(this.selectedDate);
+      const nextDate = date.add(1, "day").format("YYYY-MM-DD");
+      const newDate =
+        direction === "next"
+          ? this.isAfterToday(nextDate)
+            ? this.selectedDate
+            : nextDate
+          : date.subtract(1, "day").format("YYYY-MM-DD");
+      this.selectedDate = newDate;
+    },
+    isAfterToday(date) {
+      return dayjs().isBefore(date);
+    },
+    openInNewTab(url) {
+      window.open(url, "_blank");
+    },
   },
   computed: {
     ...mapGetters("potd", ["potd"]),
+    todayIsSelected() {
+      return this.todaysDate === this.selectedDate;
+    },
   },
   watch: {
     selectedDate: {
@@ -92,6 +125,7 @@ export default {
         this.fetching = true;
         this.fetchPotd(this.selectedDate);
         this.fetching = false;
+        this.menu = false;
         if (this.$route.query.date !== this.selectedDate)
           this.$router.push({ query: { date: this.selectedDate } });
       },
