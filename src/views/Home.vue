@@ -1,39 +1,65 @@
 <template>
   <v-container>
     <v-row>
-      <v-col>
-        <h1>NASA - Photo of the Day</h1>
+      <v-col class="d-flex"> <h1>Astronomy Photo of the Day</h1></v-col>
+      <v-col cols="3">
+        <v-menu
+          ref="menu"
+          v-model="menu"
+          transition="scale-transition"
+          offset-y
+          min-width="auto"
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              v-model="selectedDate"
+              prepend-icon="mdi-calendar"
+              readonly
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker v-model="selectedDate" no-title scrollable>
+          </v-date-picker>
+        </v-menu>
       </v-col>
-      <v-col cols="12">
-        <v-card elevation="2" v-if="potd && !fetching" min-width="100%">
+      <v-col cols="12" v-if="potd">
+        <v-card class="mx-auto">
           <v-img
             v-if="potd.media_type === 'image'"
-            contain
-            width
-            :aspect-ratio="16 / 9"
+            class="white--text align-end"
+            height="400px"
             :src="potd.url"
             :lazy-src="potd.hdurl"
-          ></v-img>
+          >
+            <v-card-title>{{ potd.title }}</v-card-title>
+          </v-img>
           <div v-if="potd.media_type === 'video'" class="embed-container">
             <iframe :src="potd.url" frameborder="0" allowfullscreen></iframe>
           </div>
-          <!-- <v-card-title>{{ potd.title }}</v-card-title> -->
-          <v-card-text>
-            <v-row>
-              <v-col cols="7">
-                <h2>{{ potd.title }}</h2>
-                <div class="grey--text mb-4">{{ potd.copyright }}</div>
-                {{ potd.explanation }}
-              </v-col>
-              <v-col cols="4" offset="1">
-                <v-date-picker v-model="picker"></v-date-picker>
-              </v-col>
-            </v-row>
+
+          <v-card-subtitle class="pb-0"> {{ potd.copyright }} </v-card-subtitle>
+
+          <v-card-text class="text--primary">
+            <h2 v-if="potd.media_type === 'video'" class="mb-3">
+              {{ potd.title }}
+            </h2>
+            <div
+              v-if="potd.media_type === 'video' && potd.copyright"
+              class="grey--text mb-4"
+            >
+              {{ potd.copyright }}
+            </div>
+            <div>{{ potd.explanation }}</div>
           </v-card-text>
+
+          <v-card-actions>
+            <v-btn color="orange" text> Share </v-btn>
+
+            <v-btn color="orange" text> Explore </v-btn>
+          </v-card-actions>
         </v-card>
         <v-skeleton-loader
           v-if="fetching"
-          v-bind="attrs"
           type="card-avatar, article, actions"
         ></v-skeleton-loader>
       </v-col>
@@ -43,15 +69,15 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import dayjs from "dayjs";
 
 export default {
   name: "Home",
   data() {
     return {
       fetching: true,
-      picker: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substr(0, 10),
+      menu: false,
+      selectedDate: this.$route.query.date || dayjs().format("YYYY-MM-DD"),
     };
   },
   methods: {
@@ -61,15 +87,16 @@ export default {
     ...mapGetters("potd", ["potd"]),
   },
   watch: {
-    picker() {
-      this.fetching = true;
-      this.fetchPotd(this.picker);
-      this.fetching = false;
+    selectedDate: {
+      handler() {
+        this.fetching = true;
+        this.fetchPotd(this.selectedDate);
+        this.fetching = false;
+        if (this.$route.query.date !== this.selectedDate)
+          this.$router.push({ query: { date: this.selectedDate } });
+      },
+      immediate: true,
     },
-  },
-  async created() {
-    await this.fetchPotd();
-    this.fetching = false;
   },
 };
 </script>
