@@ -6,6 +6,8 @@ import vuetify from "./plugins/vuetify";
 
 import api from "./plugins/api.js";
 
+import "@/styles/styles.scss";
+
 Vue.config.productionTip = false;
 
 Vue.use(api);
