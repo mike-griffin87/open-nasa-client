@@ -3,12 +3,12 @@ module.exports = {
   collectCoverage: true,
   collectCoverageFrom: [
     "src/components/**/*.vue",
-    "src/modals/*.vue",
+    "src/views/*.vue",
     "!**/node_modules/**",
   ],
   coverageDirectory: "./coverage",
   coverageReporters: ["html", "text", "text-summary"],
   testMatch: ["**/src/**/*.spec.[jt]s?(x)"],
-  setupFiles: ["jest-canvas-mock", "./vutifyTestSetup.js"],
+  setupFiles: ["./tests/vuetifyTestSetup.js"],
   transformIgnorePatterns: ["/node_modules/(?!vuetify/)"],
 };
