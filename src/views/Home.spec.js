@@ -15,6 +15,11 @@ localVue.use(VueRouter);
 const router = new VueRouter();
 let vuetify = new Vuetify();
 
+Object.defineProperty(window, "open", {
+  writable: true,
+  value: jest.fn().mockImplementation(() => true),
+});
+
 const getters = {
   potd: jest.fn(() => ({
     date: "2021-10-03",
@@ -59,7 +64,29 @@ describe("Home.vue", () => {
     });
   });
 
-  it("should render Home page", () => {
-    expect(wrapper.exists()).toBe(true);
+  it("should render new content on prev/next click", async () => {
+    // spy on changePotd method
+    const changePotd = jest.spyOn(wrapper.vm, "changePotd");
+    const paginateBtn = wrapper.findAll(".v-card__actions button").at(0);
+
+    await paginateBtn.trigger("click");
+
+    expect(changePotd).toHaveBeenCalled();
+
+    const paginateNextBtn = wrapper.findAll(".v-card__actions button").at(1);
+
+    await paginateNextBtn.trigger("click");
+
+    expect(changePotd).toHaveBeenCalled();
+  });
+
+  it("should open image in new tab on click", async () => {
+    // spy on changePotd method
+    const openInNewTab = jest.spyOn(wrapper.vm, "openInNewTab");
+    const potdImage = wrapper.find(".v-image__image.v-image__image--cover");
+
+    await potdImage.trigger("click");
+
+    expect(openInNewTab).toHaveBeenCalled();
   });
 });

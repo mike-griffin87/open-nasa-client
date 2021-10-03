@@ -40,7 +40,7 @@
       </v-row>
       <v-row>
         <v-col class="d-flex justify-center">
-          <v-btn @click="loadMore" :disabled="fetching">{{
+          <v-btn @click="loadMore" :disabled="fetching" class="load-more-btn">{{
             fetching ? "FETCHING" : "LOAD MORE"
           }}</v-btn>
         </v-col>
@@ -58,7 +58,6 @@ export default {
   data() {
     return {
       fetching: true,
-      menu: false,
       toDate: dayjs().format("YYYY-MM-DD"),
       fromDate: dayjs(this.toDate).subtract(9, "day").format("YYYY-MM-DD"),
     };
