@@ -1,0 +1,30 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Open Sans", Arial, Helvetica, sans-serif;
+  background-color: var(--background-dark);
+}
+
+.app {
+  margin: 0 auto;
+  width: 1440px;
+  max-width: 95%;
+  color: var(--font-main-dark);
+  min-height: 100vh;
+
+  a {
+    color: var(--font-main-dark);
+    text-decoration: none;
+  }
+
+  main {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+  }
+}

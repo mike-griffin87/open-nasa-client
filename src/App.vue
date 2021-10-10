@@ -1,28 +1,23 @@
 <template>
-  <v-app>
-    <v-app-bar app color="light" dark elevation="1">
-      <div class="d-flex align-center">
-        <v-img
-          maxheight="32"
-          width="100"
-          :src="require('./assets/nasa-logo.png')"
-        ></v-img>
-      </div>
+  <div class="app">
+    <Navbar />
+    <SpaceBackground />
 
-      <v-spacer></v-spacer>
-
-      <v-btn href="/" text> HOME </v-btn>
-      <v-btn href="/archive" text> ARCHIVE </v-btn>
-    </v-app-bar>
-
-    <v-main>
+    <main>
       <router-view />
-    </v-main>
-  </v-app>
+    </main>
+  </div>
 </template>
 
 <script>
+import Navbar from "@/components/Navbar";
+import SpaceBackground from "./components/SpaceBackground";
+
 export default {
+  components: {
+    Navbar,
+    SpaceBackground,
+  },
   name: "App",
 
   data: () => ({

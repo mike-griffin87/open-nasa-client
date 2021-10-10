@@ -1,18 +1,23 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
-import Archive from "../views/Archive.vue";
+import PotdHome from "../views/POTD/PotdHome.vue";
+import Archive from "../views/POTD/Archive.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
-    path: "/",
-    name: "Home",
-    component: Home,
+    path: "/potd",
+    name: "Astronomy Photo of the Day",
+    component: PotdHome,
   },
   {
-    path: "/archive",
+    path: "/potd/:date",
+    name: "Astronomy Photo of the Day",
+    component: PotdHome,
+  },
+  {
+    path: "/potd/archive",
     name: "Arcive",
     component: Archive,
   },

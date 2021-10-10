@@ -1,25 +1,22 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col class="d-flex align-center">
-        <h1>Astronomy Photo of the Day</h1></v-col
-      >
-    </v-row>
-    <v-container>
-      <v-row dense>
-        <v-col v-for="(item, i) in archive" :key="i" cols="12" md="6">
-          <v-card>
+  <div>
+    <div>
+      <div class="d-flex align-center">
+        <h1>Astronomy Photo of the Day</h1>
+      </div>
+    </div>
+    <div>
+      <div dense>
+        <div v-for="(item, i) in archive" :key="i" cols="12" md="6">
+          <div>
             <div class="d-flex flex-no-wrap justify-space-between">
               <div>
-                <v-card-title
-                  class="text-h5"
-                  v-text="item.title"
-                ></v-card-title>
+                <div class="text-h5" v-text="item.title"></div>
 
-                <v-card-subtitle v-text="item.date"></v-card-subtitle>
+                <aside v-text="item.date"></aside>
 
-                <v-card-actions>
-                  <v-btn
+                <div-actions>
+                  <button
                     class="ml-2 mt-5"
                     outlined
                     rounded
@@ -27,26 +24,24 @@
                     :href="`/?date=${item.date}`"
                   >
                     VIEW
-                  </v-btn>
-                </v-card-actions>
+                  </button>
+                </div-actions>
               </div>
 
-              <v-avatar class="ma-3" size="125" tile>
-                <v-img :src="item.thumbnail_url || item.url"></v-img>
-              </v-avatar>
+              <v-img :src="item.thumbnail_url || item.url"></v-img>
             </div>
-          </v-card>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col class="d-flex justify-center">
-          <v-btn @click="loadMore" :disabled="fetching" class="load-more-btn">{{
-            fetching ? "FETCHING" : "LOAD MORE"
-          }}</v-btn>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-container>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="d-flex justify-center">
+          <button @click="loadMore" :disabled="fetching" class="load-more-btn">
+            {{ fetching ? "FETCHING" : "LOAD MORE" }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>

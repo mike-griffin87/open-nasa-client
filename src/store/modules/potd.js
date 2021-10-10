@@ -10,8 +10,8 @@ const getters = {
 
 const actions = {
   async fetchPotd({ commit }, date = null) {
-    let url = "/planetary/apod?thumbs=true";
-    if (date) url += `&date=${date}`;
+    let url = "/planetary/apod";
+    if (date) url += `?date=${date}`;
     const response = await this._vm.$http.get(url);
     commit("setPotd", response.data);
   },
