@@ -1,16 +1,28 @@
 <template>
   <div class="potd">
     <div class="right" v-if="potd">
-      <img
-        v-if="potd.media_type === 'image'"
-        :src="potd.url"
-        @click="openInNewTab(potd.hdurl)"
-      />
-      <div v-if="potd.media_type === 'video'" class="embed-container">
-        <iframe :src="potd.url" frameborder="0" allowfullscreen></iframe>
+      <div v-if="fetching" class="loading-container">
+        <i class="fas fa-spinner"></i>
       </div>
+      <div v-else>
+        <img
+          v-if="potd.media_type === 'image'"
+          :src="potd.url"
+          @click="lightboxVisible = true"
+        />
+        <div v-if="potd.media_type === 'video'" class="embed-container">
+          <iframe :src="potd.url" frameborder="0" allowfullscreen></iframe>
+        </div>
 
-      <aside class="pb-0">{{ potd.copyright }}</aside>
+        <aside v-if="potd.copyright">{{ potd.copyright }}</aside>
+
+        <vue-easy-lightbox
+          :visible="lightboxVisible"
+          :imgs="[{ title: potd.title, src: potd.hdurl || potd.url }]"
+          @hide="lightboxVisible = false"
+        >
+        </vue-easy-lightbox>
+      </div>
     </div>
 
     <div class="left-bg"></div>
@@ -18,13 +30,17 @@
       <h1>
         {{ potd.title }}
       </h1>
-      <div>{{ potd.explanation }}</div>
-
       <div>
-        <button text @click="changePotd('previous')">Previous</button>
+        {{ potd.explanation }}
+      </div>
+
+      <div class="btn-group">
+        <button text @click="changePotd('previous')">
+          <i class="fas fa-chevron-left"></i>
+        </button>
 
         <button @click="changePotd('next')" :disabled="todayIsSelected">
-          Next
+          <i class="fas fa-chevron-right"></i>
         </button>
       </div>
     </div>
@@ -34,13 +50,18 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import dayjs from "dayjs";
+import VueEasyLightbox from "vue-easy-lightbox";
 
 export default {
   name: "Home",
+  components: {
+    VueEasyLightbox,
+  },
   data() {
     return {
       fetching: true,
       menu: false,
+      lightboxVisible: false,
       selectedDate: this.$route.params.date || dayjs().format("YYYY-MM-DD"),
       todaysDate: dayjs().format("YYYY-MM-DD"),
     };
@@ -75,10 +96,9 @@ export default {
   },
   watch: {
     selectedDate: {
-      handler() {
+      async handler() {
         this.fetching = true;
-        console.log("this.selectedDate");
-        this.fetchPotd(this.selectedDate);
+        await this.fetchPotd(this.selectedDate);
         this.fetching = false;
         this.menu = false;
       },
@@ -93,35 +113,91 @@ export default {
   display: grid;
   grid-template-columns: 50% 50%;
   grid-template-areas: "left right";
+  overflow: hidden;
+
+  @media screen and (max-width: 1000px) {
+    grid-template-columns: 100%;
+    grid-template-areas: "left" "right";
+  }
 
   .left {
     grid-area: left;
     padding: 3rem 4rem;
     position: relative;
+
+    @media screen and (max-width: 1000px) {
+      padding: 1rem 2rem;
+    }
   }
 
   .left-bg {
     grid-area: left;
-    filter: blur(10px);
-    backdrop-filter: blur(5px);
+    border-radius: 1rem;
+    backdrop-filter: blur(10px);
   }
 
   .right {
     grid-area: right;
     align-items: center;
+    display: flex;
+    position: relative;
+    height: 75vh;
 
-    img {
+    > img {
+      cursor: pointer;
       object-fit: cover;
       width: 100%;
       height: 100%;
     }
 
     aside {
-      text-align: right;
+      position: absolute;
+      bottom: 1rem;
+      left: 1rem;
+      padding: 0.5rem 1rem;
+      background: rgba(49, 49, 50, 0.75);
+      border-radius: 0.5rem;
+      font-size: 12px;
 
       &::before {
         content: "\00a9";
         margin-right: 0.25rem;
+      }
+    }
+
+    .loading-container {
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .btn-group {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: auto;
+
+    button {
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: white;
+      font-size: 2rem;
+      padding: 0.5rem;
+      transition: all 0.2s ease-in-out;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
       }
     }
   }
@@ -131,7 +207,16 @@ export default {
     border-bottom: 5px solid var(--font-main-dark);
     margin-bottom: 2rem;
     padding-bottom: 2rem;
+
+    @media screen and (max-width: 1000px) {
+      font-size: 3rem;
+    }
   }
+}
+
+.fa-spinner {
+  animation: fa-spin 2s infinite linear;
+  font-size: 5rem;
 }
 
 .embed-container {
