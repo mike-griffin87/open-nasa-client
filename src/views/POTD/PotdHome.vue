@@ -25,7 +25,6 @@
       </div>
     </div>
 
-    <div class="left-bg"></div>
     <div class="left">
       <h1>
         {{ potd.title }}
@@ -114,26 +113,22 @@ export default {
   grid-template-columns: 50% 50%;
   grid-template-areas: "left right";
   overflow: hidden;
+  align-items: center;
 
   @media screen and (max-width: 1000px) {
     grid-template-columns: 100%;
-    grid-template-areas: "left" "right";
+    grid-template-areas: "right" "left";
   }
 
   .left {
     grid-area: left;
     padding: 3rem 4rem;
     position: relative;
+    backdrop-filter: blur(10px);
 
     @media screen and (max-width: 1000px) {
       padding: 1rem 2rem;
     }
-  }
-
-  .left-bg {
-    grid-area: left;
-    border-radius: 1rem;
-    backdrop-filter: blur(10px);
   }
 
   .right {
@@ -142,12 +137,22 @@ export default {
     display: flex;
     position: relative;
     height: 75vh;
+    max-height: 800px;
 
-    > img {
-      cursor: pointer;
-      object-fit: cover;
-      width: 100%;
+    > div {
       height: 100%;
+      width: 100%;
+      img {
+        cursor: pointer;
+        object-fit: cover;
+        object-position: center;
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    @media screen and (max-width: 1000px) {
+      height: 440px;
     }
 
     aside {
