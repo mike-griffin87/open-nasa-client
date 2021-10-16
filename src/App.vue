@@ -1,7 +1,7 @@
 <template>
   <div class="app">
+    <SpaceBackground :moons="5" />
     <Navbar />
-    <SpaceBackground />
 
     <main>
       <router-view />

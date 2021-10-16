@@ -7,41 +7,36 @@
     xmlns="http://www.w3.org/2000/svg"
   >
     <circle
-      cx="236"
+      :cx="236"
       cy="236"
       r="233.5"
       stroke="currentColor"
       stroke-width="5"
     />
-    <circle cx="220" cy="377" r="2.5" stroke="currentColor" />
     <circle
-      cx="149.5"
-      cy="414.5"
-      r="9"
-      fill="currentColor"
+      v-for="i in moons"
+      :key="i"
+      :cx="random(50, 400)"
+      :cy="random(50, 400)"
+      :r="random(2, 15)"
+      :fill="random(0, 10) > 5 ? 'currentColor' : 'transparent'"
       stroke="currentColor"
     />
-    <circle
-      cx="491"
-      cy="132"
-      r="2.5"
-      fill="currentColor"
-      stroke="currentColor"
-    />
-    <circle
-      cx="424"
-      cy="271"
-      r="4.5"
-      fill="currentColor"
-      stroke="currentColor"
-    />
-    <circle cx="638" cy="199" r="4.5" stroke="currentColor" />
   </svg>
 </template>
 
 <script>
 export default {
   name: "SpaceBackground",
+  props: {
+    moons: {
+      type: Number,
+      default: 5,
+    },
+  },
+  methods: {
+    random: (min, max) => Math.floor(Math.random() * (max - min + 1) + min),
+  },
 };
 </script>
 
