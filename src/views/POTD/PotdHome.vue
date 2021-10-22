@@ -138,10 +138,14 @@ export default {
     position: relative;
     height: 75vh;
     max-height: 800px;
+    
 
     > div {
       height: 100%;
       width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      
       img {
         cursor: pointer;
         object-fit: cover;
