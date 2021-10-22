@@ -30,7 +30,7 @@
         {{ potd.title }}
       </h1>
       <div>
-        {{ potd.explanation }}
+        <p>{{ potd.explanation }}</p>
       </div>
 
       <div class="btn-group">
@@ -218,14 +218,20 @@ export default {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin: 0;
-    border-bottom: 5px solid var(--font-main-dark);
-    margin-bottom: 2rem;
-    padding-bottom: 2rem;
+    padding-bottom: .75rem;
 
     @media screen and (max-width: 1000px) {
       font-size: 3rem;
     }
   }
+
+  p {
+    color: #efefef;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    letter-spacing: .5px;
+  }
+
 }
 
 .fa-spinner {
